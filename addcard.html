@@ -1,0 +1,93 @@
+<html>
+<head>
+    <titile>
+        Add Card
+    </title>
+</head>
+
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+
+<script type='text/javascript'>
+
+//callback handler for form submit
+$(document).ready(function() {
+    
+    $("#ajaxform").submit(function(e)
+    {
+        
+        
+        var postData = $(this).serializeArray();
+        var formURL = $(this).attr("action");
+        $.ajax(
+        {
+            url : formURL,
+            type: "POST",
+            data : postData,
+            success:function(data, textStatus, jqXHR) 
+            {
+                //alert(data);
+                //data: return data from server
+                $('#addedCards').append('<li>'+data+' | '+$('#action').val()+' | '+$('#value').val()+' | '+$('#userid').val()+'</li>');
+                $('#action').val('');
+                $('#value').val('');
+                $('#action').focus();
+            },
+            error: function(jqXHR, textStatus, errorThrown) 
+            {
+                $('#addedCards').append('<li>ERROR</li>');
+            }
+        });
+        e.preventDefault(); //STOP default action
+        e.unbind(); //unbind. to stop multiple form submit.
+    });
+    
+    $(document).keydown(function(e){
+        if(e.altKey)
+        {
+            if (String.fromCharCode(e.charCode||e.keyCode)=="S")
+            {   
+                $('#action').val('google-search');
+                $('#value').focus();
+                return false;
+            }
+            if (String.fromCharCode(e.charCode||e.keyCode)=="M")
+            {   
+                $('#action').val('google-maps');
+                $('#value').focus();
+                return false;
+            }
+            if (String.fromCharCode(e.charCode||e.keyCode)=="I")
+            {   
+                $('#action').val('imdb');
+                $('#value').focus();                
+                return false;
+            }
+
+
+        }
+    });
+
+
+}); 
+
+</script>
+
+<BODY>
+    
+    <form name="ajaxform" id="ajaxform" action="http://researchbox.eu/ambient/add.php" method="POST">
+        action: <input type="text" name="action" id="action" value =""/> <br/>
+        value: <input type="text" name="value" id="value" value ="" /> <br/>
+        user: <input type="text" name="userid" id="userid" value=""/> <br/>
+        
+        <input type="submit" id="submit" value="Submit"/>
+        
+    </form>
+    
+    <ul id='addedCards'>
+    </ul>       
+
+    
+    
+</BODY>
+
+</html>
